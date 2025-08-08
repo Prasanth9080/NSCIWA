@@ -1,0 +1,155 @@
+<div class="row">
+
+  <div class="col-md-6 mb-3">
+    <label for="membershipno">Membership No:</label>
+    <input type="number" name="membershipno" id="membershipno" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="membershiptype">Membership Type:</label>
+    <select name="membershiptype" id="membershiptype" class="form-select" required>
+      <option value="" disabled selected>Select Membership Type</option>
+      <option value="junior">Junior</option>
+      <option value="senior">Senior</option>
+    </select>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="depositorsname">Depositor's Name:</label>
+    <input type="text" name="depositorsname" id="depositorsname" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="depositorsaddress">Depositor's Address:</label>
+    <textarea name="depositorsaddress" id="depositorsaddress" class="form-control" rows="2" required></textarea>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="nameofthecompany">Name of the Company:</label>
+    <input type="text" name="nameofthecompany" id="nameofthecompany" class="form-control" required>
+  </div>
+
+  <!-- Continue with the rest of your fields, ALL with `required` added: -->
+
+  <div class="col-md-4 mb-3">
+    <label for="customeridno">Customer ID No:</label>
+    <input type="number" name="customeridno" id="customeridno" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="receiptno">Receipt No:</label>
+    <input type="number" name="receiptno" id="receiptno" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="modno">MOD No:</label>
+    <input type="number" name="modno" id="modno" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="depositamount">Deposit Amount:</label>
+    <input type="number" name="depositamount" id="depositamount" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="intrefundamount">Interest Refund Amount:</label>
+    <input type="number" name="intrefundamount" id="intrefundamount" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="defaultamount">Default Amount:</label>
+    <input type="number" name="defaultamount" id="defaultamount" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="investmentdate">Investment Date:</label>
+    <input type="datetime-local" name="investmentdate" id="investmentdate" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="bondholdername">Bond Holder Name:</label>
+    <input type="text" name="bondholdername" id="bondholdername" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="projectname">Project Name:</label>
+    <input type="text" name="projectname" id="projectname" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="depositormobile_number">Depositor's Mobile Number:</label>
+    <input type="tel" name="depositormobile_number" id="depositormobile_number" class="form-control" maxlength="12" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="agentname">Agent Name:</label>
+    <input type="text" name="agentname" id="agentname" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="agentaddress">Agent Address:</label>
+    <textarea name="agentaddress" id="agentaddress" class="form-control" rows="2" required></textarea>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="bondimage">Bond Image:</label>
+    <input type="file" name="bondimage" id="bondimage" class="form-control" accept="image/*" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="nameofdirector">Name of Director:</label>
+    <input type="text" name="nameofdirector" id="nameofdirector" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="aadhar_number">Aadhar Number:</label>
+    <input type="text" name="aadhar_number" id="aadhar_number" class="form-control aadhar-input" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="pan_number">PAN Number:</label>
+    <input type="text" name="pan_number" id="pan_number" class="form-control" required>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <label for="ration_number">Ration Number:</label>
+    <input type="text" name="ration_number" id="ration_number" class="form-control" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="bankname">Bank Name:</label>
+    <input type="text" name="bankname" id="bankname" class="form-control" required>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <label for="bankaccno">Bank A/C No:</label>
+    <input type="text" name="bankaccno" id="bankaccno" class="form-control" required>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <label for="ifscno">IFSC Code:</label>
+    <input type="text" name="ifscno" id="ifscno" class="form-control" required>
+  </div>
+
+</div>
+
+
+<!-- Optional: Aadhar JS formatter -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const aadharInput = document.getElementById('aadhar_number');
+    if (aadharInput) {
+      aadharInput.addEventListener('input', function () {
+        let digits = this.value.replace(/\D/g, '').substring(0, 12);
+        let formatted = digits.match(/.{1,4}/g);
+        this.value = formatted ? formatted.join(' ') : '';
+      });
+      aadharInput.addEventListener('keydown', function (e) {
+        const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+        if (!/^\d$/.test(e.key) && !allowed.includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+    }
+  });
+</script>
