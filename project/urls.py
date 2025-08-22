@@ -32,3 +32,13 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+# trial
+
+# from django.urls import include, path
+
+# urlpatterns = [
+#     path('', include('app.urls'))
+# ]
+

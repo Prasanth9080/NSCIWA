@@ -34,105 +34,127 @@
 
 <div class="col-md-6">
     <label>Company Name:</label>
-    <input type="text" name="nameofthecompany" value="{{ kyc.nameofthecompany }}" class="form-control">
+    <input type="text" name="nameofthecompany" value="{{ kyc.nameofthecompany }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Customer ID No:</label>
-    <input type="number" name="customeridno" value="{{ kyc.customeridno }}" class="form-control">
+    <input type="number" name="customeridno" value="{{ kyc.customeridno }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Receipt No:</label>
-    <input type="number" name="receiptno" value="{{ kyc.receiptno }}" class="form-control">
+    <input type="number" name="receiptno" value="{{ kyc.receiptno }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>MOD No:</label>
-    <input type="number" name="modno" value="{{ kyc.modno }}" class="form-control">
+    <input type="number" name="modno" value="{{ kyc.modno }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Deposit Amount:</label>
-    <input type="number" name="depositamount" value="{{ kyc.depositamount }}" class="form-control">
+    <input type="number" name="depositamount" value="{{ kyc.depositamount }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Interest Refund Amount:</label>
-    <input type="number" name="intrefundamount" value="{{ kyc.intrefundamount }}" class="form-control">
+    <input type="number" name="intrefundamount" value="{{ kyc.intrefundamount }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Default Amount:</label>
-    <input type="number" name="defaultamount" value="{{ kyc.defaultamount }}" class="form-control">
+    <input type="number" name="defaultamount" value="{{ kyc.defaultamount }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Investment Date:</label>
-    <input type="date" name="investmentdate" value="{{ kyc.investmentdate|date:'Y-m-d' }}" class="form-control">
+    <input type="date" name="investmentdate" value="{{ kyc.investmentdate|date:'Y-m-d' }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Bond Holder Name:</label>
-    <input type="text" name="bondholdername" value="{{ kyc.bondholdername }}" class="form-control">
+    <input type="text" name="bondholdername" value="{{ kyc.bondholdername }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Project Name:</label>
-    <input type="text" name="projectname" value="{{ kyc.projectname }}" class="form-control">
+    <input type="text" name="projectname" value="{{ kyc.projectname }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Depositor Mobile No:</label>
-    <input type="text" name="depositormobile_number" value="{{ kyc.depositormobile_number }}" class="form-control">
+    <input type="text" name="depositormobile_number" value="{{ kyc.depositormobile_number }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Agent Name:</label>
-    <input type="text" name="agentname" value="{{ kyc.agentname }}" class="form-control">
+    <input type="text" name="agentname" value="{{ kyc.agentname }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Agent Address:</label>
-    <input type="text" name="agentaddress" value="{{ kyc.agentaddress }}" class="form-control">
+    <input type="text" name="agentaddress" value="{{ kyc.agentaddress }}" class="form-control" required>
 </div>
 
-<div class="col-md-6">
+<!-- <div class="col-md-6">
     <label>Bond Image:</label><br>
     {% if kyc.bondimage %}
         <img src="{{ kyc.bondimage.url }}" width="100" class="mb-2 img-thumbnail"><br>
     {% endif %}
+    <input type="file" name="bondimage" class="form-control" required>
+</div> -->
+<div class="col-md-6">
+    <label>Bond Image:</label><br>
+    {% if kyc.bondimage %}
+        <img src="{{ kyc.bondimage.url }}" width="100" class="mb-2 img-thumbnail"><br>
+        <small class="text-muted">Current image shown. Upload a new one only if you want to replace it.</small><br>
+    {% endif %}
     <input type="file" name="bondimage" class="form-control">
 </div>
 
+<div class="col-md-6 mb-3">
+    <label for="bondimagetype" class="mb-2">Bond Image Type:</label>
+    <select name="bondimagetype" id="bondimagetype" class="form-control" required>
+        <option value="" disabled selected>-- Bond Image Type --</option>
+        <option value="original" {% if kyc.bondimagetype == "original" %}selected{% endif %}>Original</option>
+        <option value="xerox" {% if kyc.bondimagetype == "xerox" %}selected{% endif %}>Xerox</option>
+    </select>
+  </div>
+
 <div class="col-md-6">
     <label>Name of Director:</label>
-    <input type="text" name="nameofdirector" value="{{ kyc.nameofdirector }}" class="form-control">
+    <input type="text" name="nameofdirector" value="{{ kyc.nameofdirector }}" class="form-control" required>
+</div>
+
+<div class="col-md-6">
+    <label for="aadharInput">Aadhar Number:</label>
+    <input type="text" id="aadharInput" name="aadhar_number" value="{{ kyc.aadhar_number }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>PAN Number:</label>
-    <input type="text" name="pan_number" value="{{ kyc.pan_number }}" class="form-control">
+    <input type="text" name="pan_number" value="{{ kyc.pan_number }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Ration Card Number:</label>
-    <input type="text" name="ration_number" value="{{ kyc.ration_number }}" class="form-control">
+    <input type="text" name="ration_number" value="{{ kyc.ration_number }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Bank Name:</label>
-    <input type="text" name="bankname" value="{{ kyc.bankname }}" class="form-control">
+    <input type="text" name="bankname" value="{{ kyc.bankname }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>Bank Account Number:</label>
-    <input type="text" name="bankaccno" value="{{ kyc.bankaccno }}" class="form-control">
+    <input type="text" name="bankaccno" value="{{ kyc.bankaccno }}" class="form-control" required>
 </div>
 
 <div class="col-md-6">
     <label>IFSC Code:</label>
-    <input type="text" name="ifscno" value="{{ kyc.ifscno }}" class="form-control">
+    <input type="text" name="ifscno" value="{{ kyc.ifscno }}" class="form-control" required>
 </div>
 
             </div>

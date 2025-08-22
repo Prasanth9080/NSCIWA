@@ -38,7 +38,7 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(MyKYC)
 class MyKYCAdmin(admin.ModelAdmin):
     list_display = (
-        'membershipno','membershiptype','depositorsname', 'created_by', 'bondholdername', 'projectname',
+        'id','user','membershipno','membershiptype','depositorsname', 'created_by', 'bondholdername', 'projectname',
         'depositormobile_number', 'aadhar_number', 'pan_number', 'investmentdate',
         'depositamount', 'intrefundamount', 'defaultamount'
     )
@@ -94,3 +94,15 @@ class BondImageAdmin(admin.ModelAdmin):
 
 # admin.site.register(User, CustomUserAdmin)
 # admin.site.register(KycDetailsNew)
+
+# trial
+
+# from django.contrib import admin
+# from .models import Product
+
+# class ProductAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'price', 'created_at')
+#     search_fields = ('name')
+
+# admin.site.register(Product, ProductAdmin)
+

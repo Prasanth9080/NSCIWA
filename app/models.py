@@ -16,50 +16,60 @@ class User(AbstractUser):
 
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
 class MyKYC(models.Model):
-    MEMBERSHIP_CHOICES = [('senior', 'senior'), ('junior', 'junior')]
+    MEMBERSHIP_CHOICES = [
+        ('senior', 'Senior'),
+        ('junior', 'Junior')
+    ]
+    BOND_IMAGE_TYPE_CHOICES = [
+        ('original', 'Original'),
+        ('xerox', 'Xerox'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_kycs")
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_my_kycs")
-    
-    membershipno = models.IntegerField(max_length=10)
-    membershiptype = models.CharField(max_length=10, choices=MEMBERSHIP_CHOICES)
-    depositorsname = models.CharField(max_length=100, default='')
-    depositorsaddress = models.TextField(default='')
-    nameofthecompany = models.CharField(max_length=100, default='')
-    
-    customeridno = models.IntegerField()
-    receiptno = models.IntegerField()
-    modno = models.IntegerField()
-    
-    depositamount = models.IntegerField()
-    intrefundamount = models.IntegerField()
-    defaultamount = models.IntegerField()
+
+    membershipno = models.IntegerField(null=True, blank=True)
+    membershiptype = models.CharField(max_length=10, choices=MEMBERSHIP_CHOICES, blank=True)
+    depositorsname = models.CharField(max_length=100, blank=True)
+    depositorsaddress = models.TextField(blank=True)
+    nameofthecompany = models.CharField(max_length=100, blank=True)
+
+    customeridno = models.IntegerField(null=True, blank=True)
+    receiptno = models.IntegerField(null=True, blank=True)
+    modno = models.IntegerField(null=True, blank=True)
+
+    depositamount = models.IntegerField(null=True, blank=True)
+    intrefundamount = models.IntegerField(null=True, blank=True)
+    defaultamount = models.IntegerField(null=True, blank=True)
 
     investmentdate = models.DateTimeField(default=timezone.now)
-    
-    bondholdername = models.CharField(max_length=100, default='')
-    projectname = models.CharField(max_length=100, default='')
-    depositormobile_number = models.CharField(max_length=12, default='')
-    
-    agentname = models.CharField(max_length=100, default='')
-    agentaddress = models.TextField(default='')
-    
-    bondimage = models.ImageField(upload_to='kyc_uploads/')
-    
-    nameofdirector = models.CharField(max_length=100, default='')
-    aadhar_number = models.CharField(max_length=20)
-    pan_number = models.CharField(max_length=20)
-    ration_number = models.CharField(max_length=20)
-    
-    bankname = models.CharField(max_length=100, default='')
-    bankaccno = models.CharField(max_length=20, default='')
-    ifscno = models.CharField(max_length=50, default='')
+
+    bondholdername = models.CharField(max_length=100, blank=True)
+    projectname = models.CharField(max_length=100, blank=True)
+    depositormobile_number = models.CharField(max_length=12, blank=True)
+
+    agentname = models.CharField(max_length=100, blank=True)
+    agentaddress = models.TextField(blank=True)
+
+    bondimage = models.ImageField(upload_to='kyc_uploads/', null=True, blank=True)
+    bondimagetype = models.CharField(max_length=10, choices=BOND_IMAGE_TYPE_CHOICES, null=True, blank=True)
+    nameofdirector = models.CharField(max_length=100, blank=True)
+    aadhar_number = models.CharField(max_length=20, blank=True)
+    pan_number = models.CharField(max_length=20, blank=True)
+    ration_number = models.CharField(max_length=20, blank=True)
+
+    bankname = models.CharField(max_length=100, blank=True)
+    bankaccno = models.CharField(max_length=20, blank=True)
+    ifscno = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return f"KYC for {self.depositorsname} - {self.projectname}"
+
 
 
 # -----------------------------
@@ -107,3 +117,25 @@ class BondImage(models.Model):
     def __str__(self):
         return f"BondImage ({self.image.name})"
 
+# trial
+
+# from django.db import models
+
+# class product(models.Model):
+#     name = models.CharField(max_length=30),
+#     price = models.IntegerField(max_length=10, decimal_place=2)
+#     created_at = models.DateTimeField(auto_created=True)
+
+#     def __str__(self):
+#         return self.name
+
+# from django.db import models 
+
+# class product(models.Model):
+#     name = models.CharField(max_length=20),
+#     price = models.FloatField(max_length=10, decimal_place=2),
+#     created_at = models.DateTimeField()
+#     file = models.FileField()
+
+#     def __str__(self):
+#         return self.name

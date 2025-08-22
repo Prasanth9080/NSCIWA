@@ -484,6 +484,7 @@ def form_page(request):
         agentname = request.POST.get('agentname')
         agentaddress = request.POST.get('agentaddress')
         bondimage = request.FILES.get('bondimage')
+        bondimagetype = request.POST.get('bondimagetype')
         nameofdirector = request.POST.get('nameofdirector')
         aadhar_number = request.POST.get('aadhar_number')
         pan_number = request.POST.get('pan_number')
@@ -529,6 +530,7 @@ def form_page(request):
             agentname=agentname,
             agentaddress=agentaddress,
             bondimage=bondimage,
+            bondimagetype=bondimagetype,
             nameofdirector=nameofdirector,
             aadhar_number=aadhar_number,
             pan_number=pan_number,
@@ -590,7 +592,7 @@ def edit_kyc(request, kyc_id, kyc_type):
 
         kyc.agentname = request.POST.get("agentname")
         kyc.agentaddress = request.POST.get("agentaddress")
-
+        kyc.bondimagetype = request.POST.get("bondimagetype")
         kyc.nameofdirector = request.POST.get("nameofdirector")
         kyc.aadhar_number = request.POST.get("aadhar_number")
         kyc.pan_number = request.POST.get("pan_number")
@@ -664,7 +666,7 @@ def download_kyc_excel(request, kyc_type):
         'Company Name', 'Customer ID No', 'Receipt No', 'MOD No',
         'Deposit Amount', 'Interest Refund Amount', 'Default Amount', 'Investment Date',
         'Bondholder Name', 'Project Name', 'Depositor Mobile Number',
-        'Agent Name', 'Agent Address', 'Bond Image URL',
+        'Agent Name', 'Agent Address', 'Bond Image URL', 'Bond Image Type'
         'Director Name', 'Aadhar Number', 'PAN Number', 'Ration Card Number',
         'Bank Name', 'Bank A/C No', 'IFSC Code'
     ]
@@ -697,35 +699,39 @@ def download_kyc_excel(request, kyc_type):
 
     kyc_list = kyc_list.exclude(id__in=hidden_ids)
 
-    for idx, kyc in enumerate(kyc_list, start=1):
-             sheet.append([
-            idx,
-            kyc.membershipno or '',
-            kyc.membershiptype or '',
-            kyc.depositorsname or '',
-            kyc.depositorsaddress or '',
-            kyc.nameofthecompany or '',
-            kyc.customeridno or '',
-            kyc.receiptno or '',
-            kyc.modno or '',
-            kyc.depositamount or '',
-            kyc.intrefundamount or '',
-            kyc.defaultamount or '',
-            kyc.investmentdate.strftime('%d-%m-%Y') if kyc.investmentdate else '',
-            kyc.bondholdername or '',
-            kyc.projectname or '',
-            kyc.depositormobile_number or '',
-            kyc.agentname or '',
-            kyc.agentaddress or '',
-            kyc.bondimage.url if kyc.bondimage else '',
-            kyc.nameofdirector or '',
-            kyc.aadhar_number or '',
-            kyc.pan_number or '',
-            kyc.ration_number or '',
-            kyc.bankname or '',
-            kyc.bankaccno or '',
-            kyc.ifscno or '',
-        ])
+    if not kyc_list.exists():
+        sheet.append(["Your data is empty"])
+    else:    
+        for idx, kyc in enumerate(kyc_list, start=1):
+                sheet.append([
+                idx,
+                kyc.membershipno or '',
+                kyc.membershiptype or '',
+                kyc.depositorsname or '',
+                kyc.depositorsaddress or '',
+                kyc.nameofthecompany or '',
+                kyc.customeridno or '',
+                kyc.receiptno or '',
+                kyc.modno or '',
+                kyc.depositamount or '',
+                kyc.intrefundamount or '',
+                kyc.defaultamount or '',
+                kyc.investmentdate.strftime('%d-%m-%Y') if kyc.investmentdate else '',
+                kyc.bondholdername or '',
+                kyc.projectname or '',
+                kyc.depositormobile_number or '',
+                kyc.agentname or '',
+                kyc.agentaddress or '',
+                kyc.bondimage.url if kyc.bondimage else '',
+                kyc.bondimagetype or '',
+                kyc.nameofdirector or '',
+                kyc.aadhar_number or '',
+                kyc.pan_number or '',
+                kyc.ration_number or '',
+                kyc.bankname or '',
+                kyc.bankaccno or '',
+                kyc.ifscno or '',
+            ])
         
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     filename = 'my_kyc_details.xlsx' if kyc_type == 'my' else 'sub_kyc_details.xlsx'
@@ -737,9 +743,9 @@ def download_kyc_excel(request, kyc_type):
 # pdf download
 
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from reportlab.lib.units import mm
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import MyKYC, SubKYC
@@ -750,15 +756,17 @@ def download_kyc_pdf(request, kyc_type):
     filename = "my_kyc_report.pdf" if kyc_type == 'my' else "sub_kyc_report.pdf"
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    c = canvas.Canvas(response, pagesize=A4)
-    W, H = A4
-    margin = 20 * mm
-    x0 = margin
-    y = H - margin
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
 
+    # Title
+    elements.append(Paragraph("KYC Report", styles['Title']))
+    elements.append(Spacer(1, 12))
+
+    # Get KYC list
     user = request.user
     selected_user = user
-
     user_id = request.GET.get('user_id')
     if user.is_main_user and user_id:
         from django.contrib.auth import get_user_model
@@ -778,97 +786,55 @@ def download_kyc_pdf(request, kyc_type):
 
     kyc_list = kyc_list.exclude(id__in=hidden_ids)
 
-    c.setFont("Helvetica-Bold", 18)
-    c.drawCentredString(W / 2, y, "KYC Report")
-    y -= 15 * mm
+    if not kyc_list.exists():
+        elements.append(Paragraph("No KYC data found.", styles['Normal']))
+    else:
+        for idx, kyc in enumerate(kyc_list, 1):
+            elements.append(Paragraph(f"KYC #{idx}", styles['Heading2']))
+            
+            # Prepare data table
+            data = [
+                ["Membership No", kyc.membershipno or "—"],
+                ["Membership Type", kyc.membershiptype or "—"],
+                ["Depositor Name", kyc.depositorsname or "—"],
+                ["Depositor Address", kyc.depositorsaddress or "—"],
+                ["Company Name", kyc.nameofthecompany or "—"],
+                ["Customer ID", kyc.customeridno or "—"],
+                ["Receipt No", kyc.receiptno or "—"],
+                ["MOD No", kyc.modno or "—"],
+                ["Deposit Amount", f"₹{kyc.depositamount}" if kyc.depositamount else "—"],
+                ["Int Refund Amount", f"₹{kyc.intrefundamount}" if kyc.intrefundamount else "—"],
+                ["Default Amount", f"₹{kyc.defaultamount}" if kyc.defaultamount else "—"],
+                ["Investment Date", kyc.investmentdate.strftime("%d-%m-%Y") if kyc.investmentdate else "—"],
+                ["Bondholder Name", kyc.bondholdername or "—"],
+                ["Bond Image Type", kyc.bondimagetype or "—"],
+                ["Project Name", kyc.projectname or "—"],
+                ["Depositor Mobile", kyc.depositormobile_number or "—"],
+                ["Agent Name", kyc.agentname or "—"],
+                ["Agent Address", kyc.agentaddress or "—"],
+                ["Director Name", kyc.nameofdirector or "—"],
+                ["Aadhar No", kyc.aadhar_number or "—"],
+                ["PAN No", kyc.pan_number or "—"],
+                ["Ration Card No", kyc.ration_number or "—"],
+                ["Bank Name", kyc.bankname or "—"],
+                ["Account No", kyc.bankaccno or "—"],
+                ["IFSC Code", kyc.ifscno or "—"]
+            ]
 
-    for idx, kyc in enumerate(kyc_list, 1):
-        labels = [
-            ("Membership No", kyc.membershipno or "—"),
-            ("Membership Type", kyc.membershiptype or "—"),
-            ("Depositor Name", kyc.depositorsname),
-            ("Depositor Address", kyc.depositorsaddress),
-            ("Company Name", kyc.nameofthecompany),
-            ("Customer ID", kyc.customeridno or "—"),
-            ("Receipt No", kyc.receiptno or "—"),
-            ("MOD No", kyc.modno or "—"),
-            ("Deposit Amount", f"₹{kyc.depositamount}" if kyc.depositamount else "—"),
-            ("Int Refund Amount", f"₹{kyc.intrefundamount}" if kyc.intrefundamount else "—"),
-            ("Default Amount", f"₹{kyc.defaultamount}" if kyc.defaultamount else "—"),
-            ("Investment Date", kyc.investmentdate.strftime("%d-%m-%Y") if kyc.investmentdate else "—"),
-            ("Bondholder Name", kyc.bondholdername),
-            ("Project Name", kyc.projectname),
-            ("Depositor Mobile", kyc.depositormobile_number or "—"),
-            ("Agent Name", kyc.agentname),
-            ("Agent Address", kyc.agentaddress),
-            ("Director Name", kyc.nameofdirector or "—"),
-            ("Aadhar No", kyc.aadhar_number or "—"),
-            ("PAN No", kyc.pan_number or "—"),
-            ("Ration Card No", kyc.ration_number or "—"),
-            ("Bank Name", kyc.bankname),
-            ("Account No", kyc.bankaccno),
-            ("IFSC Code", kyc.ifscno),
-        ]
+            table = Table(data, colWidths=[120, 300])
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.lightyellow]),
+            ]))
+            elements.append(table)
+            elements.append(Spacer(1, 12))
 
-        bonds = kyc.bonds.all()
-        bond_lines = len(bonds) * 2 if bonds.exists() else 1
-        lines_needed = (len(labels) + 1) // 2 + bond_lines + 4  # extra padding
-        card_height = lines_needed * 6 * mm + 15 * mm  # each line ~6mm
-
-        # Page break
-        if y - card_height < margin:
-            c.showPage()
-            y = H - margin
-            c.setFont("Helvetica-Bold", 18)
-            c.drawCentredString(W / 2, y, "KYC Report")
-            y -= 15 * mm
-
-        # Draw box
-        c.setLineWidth(1)
-        c.roundRect(x0, y - card_height, W - 2 * margin, card_height, 5 * mm, stroke=1, fill=0)
-
-        # Header
-        header_h = 10 * mm
-        c.setFillColor(colors.lightgrey)
-        c.roundRect(x0, y - header_h, W - 2 * margin, header_h, 5 * mm, stroke=0, fill=1)
-        c.setFillColor(colors.black)
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(x0 + 5 * mm, y - header_h + 2 * mm, f"KYC #{idx}")
-
-        # Labels (2 columns)
-        col_x = [x0 + 5 * mm, x0 + (W - 2 * margin) / 2 + 5 * mm]
-        c.setFont("Helvetica", 10)
-        line_h = 6 * mm
-        start_y = y - header_h - 5 * mm
-
-        for i, (label, val) in enumerate(labels):
-            col = i % 2
-            row = i // 2
-            text_y = start_y - row * line_h
-            c.drawString(col_x[col], text_y, f"{label}: {val}")
-
-        # Bond Section
-        bond_start_y = start_y - ((len(labels) + 1) // 2) * line_h - 4 * mm
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(x0 + 5 * mm, bond_start_y, "Bond Details:")
-        bond_y = bond_start_y - 5 * mm
-        c.setFont("Helvetica", 9)
-
-        if bonds.exists():
-            for bond in bonds:
-                c.drawString(x0 + 10 * mm, bond_y, f"Company: {bond.companyname}, Project: {bond.projectname}")
-                bond_y -= line_h
-                c.drawString(x0 + 10 * mm, bond_y, f"Amount: ₹{bond.amount}, Date: {bond.investment_date.strftime('%d-%m-%Y')}, ID: {bond.customer_id}")
-                bond_y -= line_h
-        else:
-            c.drawString(x0 + 10 * mm, bond_y, "No bond details available.")
-            bond_y -= line_h
-
-        # Update Y for next card
-        y -= card_height + 5 * mm
-
-    c.save()
+    doc.build(elements)
     return response
+
 
 
 # from reportlab.lib.pagesizes import A4
@@ -1348,7 +1314,7 @@ def add_my_kyc(request):
             agentaddress=request.POST.get('agentaddress'),
 
             bondimage=request.FILES.get('bondimage'),
-
+            bondimagetype=request.POST.get('bondimagetype'),
             nameofdirector=request.POST.get('nameofdirector'),
             aadhar_number=request.POST.get('aadhar_number'),
             pan_number=request.POST.get('pan_number'),
@@ -1410,3 +1376,31 @@ def add_other_kyc(request):
         messages.success(request, "Sub-KYC added successfully.")
         return redirect('formpage')
 
+
+
+# trial
+
+# products = Product.objects.all()
+# products = Product.objects.filter(price__gt=100)
+
+# FBV function based view
+# from django.http import HttpResponse
+
+# def product(request):
+#     product = product.objects.all()
+#     return (request, HttpResponse, {product: product})
+
+# # CBV class based view
+# from django.views.generic import View
+
+# class ProductListView(View):
+#     model = product
+#     template_view = 'product.html'
+
+# # POST method
+# def product(request):
+#     if request.method == 'POST':
+#         name = request.POST.method('name')
+#         phone = request.POST.method('phone')
+#         return render(HttpResponse)
+#     return (request, 'home.html')

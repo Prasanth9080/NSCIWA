@@ -21,3 +21,21 @@ class CustomPasswordResetForm(PasswordResetForm):
             raise ValidationError("Email is not valid, please enter a valid email.")
         return email
 
+# trial
+
+# from django import forms
+# from .models import product
+
+# class productform(forms.Form):
+#     class Meta:
+#         models = product
+#         fields = ['name', 'product']
+
+# from django import forms
+
+# class productform(forms.Form):
+#     name = forms.CharField(max_length=50)
+#     email = forms.EmailField(max_length=50)
+#     product = forms.CharField(max_length=100)
+
+

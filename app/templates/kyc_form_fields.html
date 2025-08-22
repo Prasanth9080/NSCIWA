@@ -6,7 +6,7 @@
   </div>
 
   <div class="col-md-6 mb-3">
-    <label for="membershiptype">Membership Type:</label>
+    <label for="membershiptype" class="mb-2">Membership Type:</label>
     <select name="membershiptype" id="membershiptype" class="form-select" required>
       <option value="" disabled selected>Select Membership Type</option>
       <option value="junior">Junior</option>
@@ -94,6 +94,15 @@
   <div class="col-md-6 mb-3">
     <label for="bondimage">Bond Image:</label>
     <input type="file" name="bondimage" id="bondimage" class="form-control" accept="image/*" required>
+  </div>
+
+  <div class="col-md-6 mb-3">
+    <label for="bondimagetype" class="mb-2">Bond Image Type:</label>
+    <select name="bondimagetype" id="bondimagetype" class="form-control" required>
+        <option value="" disabled selected>-- Bond Image Type --</option>
+        <option value="original">Original</option>
+        <option value="xerox">Xerox</option>
+    </select>
   </div>
 
   <div class="col-md-6 mb-3">
