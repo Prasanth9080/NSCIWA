@@ -6,6 +6,8 @@
 #     class Meta:
 #         model = User
 #         fields = ['username', 'email', 'phone_number', 'password']
+
+
 # forms.py
 from django import forms
 from django.contrib.auth.forms import PasswordResetForm
@@ -21,21 +23,23 @@ class CustomPasswordResetForm(PasswordResetForm):
             raise ValidationError("Email is not valid, please enter a valid email.")
         return email
 
-# trial
 
-# from django import forms
-# from .models import product
+# Bond hold date field
+from django import forms
+from .models import BondImage
 
-# class productform(forms.Form):
-#     class Meta:
-#         models = product
-#         fields = ['name', 'product']
+class BondImageForm(forms.ModelForm):
+    investment_date = forms.DateField(
+        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d'],
+        widget=forms.DateInput(format='%d-%m-%Y', attrs={'placeholder': 'dd-mm-yyyy'})
+    )
+    dateofresale = forms.DateField(
+        input_formats=['%d.%m.%Y', '%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d'],
+        widget=forms.DateInput(format='%d-%m-%Y', attrs={'placeholder': 'dd-mm-yyyy'})
+    )
 
-# from django import forms
-
-# class productform(forms.Form):
-#     name = forms.CharField(max_length=50)
-#     email = forms.EmailField(max_length=50)
-#     product = forms.CharField(max_length=100)
+    class Meta:
+        model = BondImage
+        fields = '__all__'
 
 

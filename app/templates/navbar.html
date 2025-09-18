@@ -204,15 +204,19 @@
     {% if is_main_user or is_sub_mainuser %}
           <div class="mt-4 px-3">
             <h5 class="text-center">🙍🏻Users</h5>
-            <ul class="list-unstyled text-black">
+
+            <!-- scroll user list -->
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+              <ul class="list-unstyled text-black">
               {% for u in users %}
-              <li>
+              <li class="mb-2">
                 <a href="{% url 'formpage' %}?user_id={{ u.id }}" style="color: black;">
                   📌 {{ u.username }}
                 </a>
               </li>
               {% endfor %}
             </ul>
+            </div>
           </div>
           {% endif %}
 

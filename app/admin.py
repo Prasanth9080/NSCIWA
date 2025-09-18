@@ -27,23 +27,22 @@ class UserAdmin(admin.ModelAdmin):
 # ----------------------------------------
 # Admin for MyKYC
 # ----------------------------------------
-# @admin.register(MyKYC)
-# class MyKYCAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'created_by', 'name', 'age', 'fathername',
-#                     'mobile_number', 'aadhar_number','aadhar_front_image','aadhar_back_image','address',
-#                     'profession','contactSH','nameSH','investmentamt','passportphoto')
-#     search_fields = ('name', 'mobile_number', 'aadhar_number')
-#     list_filter = ('created_by',)
+from django.contrib import admin
+from .models import MyKYC
 
 @admin.register(MyKYC)
 class MyKYCAdmin(admin.ModelAdmin):
     list_display = (
-        'id','user','membershipno','membershiptype','depositorsname', 'created_by', 'bondholdername', 'projectname',
-        'depositormobile_number', 'aadhar_number', 'pan_number', 'investmentdate',
-        'depositamount', 'intrefundamount', 'defaultamount'
+        'associationname', 'membershipno', 'depositorsname', 'depositorsmailid', 'depositorsaddress',
+        'bondholdername', 'depositormobile_number', 'agentname', 'agentmobnum', 'agentmailid', 'agentaddress', 'nameofdirector', 'aadhar_number',
+        'pan_number', 'ration_number', 'bankname', 'bankaccno', 'ifscno'
     )
-    search_fields = ('depositorsname', 'depositormobile_number', 'aadhar_number', 'pan_number')
-    list_filter = ('created_by', 'projectname', 'investmentdate')
+    search_fields = (
+        'depositorsname', 'bondholdername',
+        'depositormobile_number', 'aadhar_number', 'pan_number'
+    )
+    list_filter = ('created_by',)
+
 # ----------------------------------------
 # Admin for SubKYC
 # ----------------------------------------
@@ -63,9 +62,9 @@ from django.utils.html import format_html
 @admin.register(BondImage)
 class BondImageAdmin(admin.ModelAdmin):
     list_display = (
-        'id','username', 'image_tag', 'my_kyc', 'sub_kyc',
-        'companyname', 'projectname', 'amount',
-        'investment_date', 'customer_id'
+        'id','username', 'my_kyc', 'sub_kyc',
+        'companyname', 'projectname', 'amount', 'dateofresale', 'tokennum', 'remarks',
+        'investment_date', 'customer_id','bondholdername', 'bondimagetype', 'agentid'
     )
     search_fields = ('companyname', 'projectname', 'customer_id')
     list_filter = ('investment_date', 'companyname')
@@ -78,11 +77,6 @@ class BondImageAdmin(admin.ModelAdmin):
             return obj.sub_kyc.user.username
         return '-'
     
-    @admin.display(description='Image')
-    def image_tag(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="width: 100px; height: auto;" />', obj.image.url)
-        return "-"
 # from django.contrib import admin
 # from django.contrib.auth.admin import UserAdmin
 # from .models import User, KycDetailsNew
@@ -94,15 +88,3 @@ class BondImageAdmin(admin.ModelAdmin):
 
 # admin.site.register(User, CustomUserAdmin)
 # admin.site.register(KycDetailsNew)
-
-# trial
-
-# from django.contrib import admin
-# from .models import Product
-
-# class ProductAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'price', 'created_at')
-#     search_fields = ('name')
-
-# admin.site.register(Product, ProductAdmin)
-
