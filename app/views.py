@@ -13,54 +13,6 @@ def generate_otp():
     return ''.join(random.choices(string.digits, k=6))  # 6-digit OTP
 
 
-# from django.shortcuts import render, redirect
-# from django.contrib import messages
-# from django.contrib.auth.models import BaseUserManager
-# from rest_framework_simplejwt.tokens import RefreshToken
-
-# from .models import User  # your custom user model
-
-# def signup_view(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('username')
-#         phone = request.POST.get('phone_number')
-#         email = request.POST.get('email')
-
-#         # Server-side validation
-#         if len(phone) != 10 or not phone.isdigit():
-#             messages.error(request, "Enter a valid 10-digit phone number")
-#             return redirect('signup')
-
-#         if User.objects.filter(phone_number=phone).exists():
-#             messages.error(request, "Phone number already registered")
-#             return redirect('signup')
-
-#         if User.objects.filter(email=email).exists():
-#             messages.error(request, "Email already registered")
-#             return redirect('signup')
-
-#         # Generate random password using BaseUserManager
-#         # random_password = BaseUserManager().make_random_password()
-
-#         # Create user
-#         user = User.objects.create_user(
-#             username=name,
-#             email=email,
-#             phone_number=phone,
-#             # password=random_password
-#         )
-
-#         # Generate JWT token
-#         refresh = RefreshToken.for_user(user)
-#         user.jwt_token = str(refresh.access_token)
-#         user.save()
-
-#         messages.success(request, "Signup successful! Please login.")
-#         return redirect('login')
-
-#     return render(request, 'signup.html')
-
-
 # Signup
 
 def signup_view(request):
@@ -135,20 +87,6 @@ def change_password_view(request):
 
     return render(request, 'change_password.html')
 
-# test-mail
-
-# from django.core.mail import send_mail
-# from django.http import HttpResponse
-
-# def test_email(request):
-#     send_mail(
-#         'Test Subject',
-#         'This is a test email from Django.',
-#         'prasanthchaandhu02@gmail.com',  # must match EMAIL_HOST_USER in settings
-#         ['prasanthchaandhu02@gmail.com'],  # recipient email
-#         fail_silently=False,
-#     )
-#     return HttpResponse("Email sent!")
 
 # password reset through email
 
@@ -173,34 +111,6 @@ def password_reset_request(request):
             messages.error(request, "Email is not valid. Please enter a valid email address.")
     return render(request, 'password_reset.html', {'form': form})
 
-
-# def login_view(request):
-#     if request.method == 'POST':
-#         phone = request.POST.get('phone_number')
-
-#         try:
-#             user = User.objects.get(phone_number=phone)
-
-#             if not user.jwt_token:
-#                 # Generate new token if missing
-#                 refresh = RefreshToken.for_user(user)
-#                 user.jwt_token = str(refresh.access_token)
-#                 user.save()
-
-#             otp = generate_otp()
-#             otp_storage[phone] = otp
-#             request.session['phone_number'] = phone
-
-#             print(f"\n🔐 OTP for {phone}: {otp}\n")  # Print clearly to terminal
-
-#             messages.success(request, "OTP sent to your number.")
-#             return redirect('verify_otp')
-
-#         except User.DoesNotExist:
-#             messages.error(request, "This number is not registered. Please sign up.")
-#             return redirect('signup')
-
-#     return render(request, 'login.html')
 
 # Login 
 
@@ -979,19 +889,20 @@ def download_kyc_pdf(request, kyc_type):
 
         main_table = Table(main_table_data, colWidths=[70*mm, 120*mm])
         main_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 7.5),
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.whitesmoke, colors.lightyellow]),
-            ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.grey),
         ]))
         elements.append(main_table)
         elements.append(Spacer(1, 5*mm))
 
+        #########################################################
         # Bond Section
+        #########################################################
         bonds = getattr(kyc, "bonds", None)
         if bonds is None and hasattr(kyc, "bondimage_set"):
             bonds = kyc.bondimage_set
@@ -1000,242 +911,52 @@ def download_kyc_pdf(request, kyc_type):
             elements.append(Paragraph("Bond Details", styles['Heading3']))
             elements.append(Spacer(1, 2 * mm))
 
-            bond_table_data = [["S.No", "Bond Holder Name", "Company Name", "Project Name", "Deposit Amount",
-                                "Investment Date", "Date of Resale", "Customer ID", "Agent ID", "Token Number", "Remarks", "Bond in Hand Original or Xerox"]]
+            # bond_table_data = [["S.No", "Bond Holder Name", "Company Name", "Project Name", "Deposit Amount",
+            #                     "Investment Date", "Date of Resale", "Customer ID", "Agent ID", "Token Number", "Remarks", "Bond in Hand Original or Xerox"]]
             for b_i, bond in enumerate(bonds.all(), start=1):
-                bond_table_data.append([
-                    str(b_i),
-                    safe_attr(bond, "bondholdername"),
-                    safe_attr(bond, "companyname", "company_name"),
-                    safe_attr(bond, "projectname", "project_name"),
-                    safe_attr(bond, "amount"),
-                    date_format(getattr(bond, "investment_date", None), "d-m-Y") if getattr(bond, "investment_date", None) else "",
-                    date_format(getattr(bond, "dateofresale", None), "d-m-Y") if getattr(bond, "dateofresale", None) else "",
-                    safe_attr(bond, "customer_id"),
-                    safe_attr(bond, "agentid"),
-                    safe_attr(bond, "tokennum"),
-                    safe_attr(bond, "remarks"),
-                    safe_attr(bond, "bondimagetype"),
-                ])
+                elements.append(Paragraph(f"Bond Record {b_i}", styles['Heading4']))
+                elements.append(Spacer(1, 1 * mm))
 
-            bond_table = Table(
-                bond_table_data,
-                colWidths=[10*mm, 30*mm, 25*mm, 25*mm, 22*mm, 22*mm, 22*mm, 22*mm, 25*mm]
-            )
-            bond_table.hAlign = "CENTER"
+                bond_table_data = [
+                    ["S.No", str(b_i)],
+                    ["Bond Holder Name", safe_attr(bond, "bondholdername")],
+                    ["Company Name", safe_attr(bond, "companyname", "company_name")],
+                    ["Project Name", safe_attr(bond, "projectname", "project_name")],
+                    ["Deposit Name", safe_attr(bond, "amount")],
+                    ["Investment Date", date_format(getattr(bond, "investment_date", None), "d-m-Y") if getattr(bond, "investment_date", None) else ""],
+                    ["Date of Resale", date_format(getattr(bond, "dateofresale", None), "d-m-Y") if getattr(bond, "dateofresale", None) else ""],
+                    ["Customer ID", safe_attr(bond, "customer_id")],
+                    ["Agent ID", safe_attr(bond, "agentid")],
+                    ["Token No.", safe_attr(bond, "tokennum")],
+                    ["Remarks", safe_attr(bond, "remarks")],
+                    ["Bond Image Type", safe_attr(bond, "bondimagetype")],
+                ]
 
-            bond_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 8),
-                ('FONTSIZE', (0, 1), (-1, -1), 7),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.lightcyan]),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                ('BOX', (0, 0), (-1, -1), 0.4, colors.black),
-                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.grey),
-            ]))
+                # include bond image inline if present
+                # bond_image_field = getattr(bond, "image", None)
+                # if bond_image_field:
+                #     img = safe_image(bond_image_field, width=30*mm, height=25*mm)
+                #     bond_table_data.append(["Bond Image", img])
 
-            elements.append(bond_table)
-            elements.append(Spacer(1, 8*mm))
+                bond_table = Table(bond_table_data, colWidths=[50*mm, 110*mm])
+                bond_table.setStyle(TableStyle([
+                    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                    ('FONTSIZE', (0, 0), (-1, -1), 8),
+                    ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.whitesmoke, colors.lightcyan]),
+                    ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.grey),
+                    ('TOPPADDING', (0, 0), (-1, -1), 4),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+                ]))
+
+                elements.append(bond_table)
+                elements.append(Spacer(1, 8*mm))
 
     # Build PDF
     doc.build(elements)
     return response
-
-
-
-
-# from reportlab.lib.pagesizes import A4
-# from reportlab.pdfgen import canvas
-# from reportlab.lib import colors
-# from reportlab.lib.units import mm
-# from django.http import HttpResponse
-# from django.contrib.auth.decorators import login_required
-# from .models import MyKYC, SubKYC
-
-# @login_required
-# def download_kyc_pdf(request, kyc_type):
-#     response = HttpResponse(content_type='application/pdf')
-#     filename = "my_kyc_report.pdf" if kyc_type == 'my' else "sub_kyc_report.pdf"
-#     response['Content-Disposition'] = f'attachment; filename="{filename}"'
-
-#     c = canvas.Canvas(response, pagesize=A4)
-#     W, H = A4
-#     margin = 20 * mm
-#     card_width = W - 2 * margin
-#     card_height = 60 * mm
-#     x0 = margin
-#     y = H - margin
-
-#     c.setFont("Helvetica-Bold", 18)
-#     c.drawCentredString(W / 2, y, "KYC Report")
-#     y -= 15 * mm
-
-#     user = request.user
-#     selected_user = user
- 
-#     user_id = request.GET.get('user_id')
-#     if user.is_main_user and user_id:
-#         from django.contrib.auth import get_user_model
-#         User = get_user_model()
-#         try:
-#             selected_user = User.objects.get(id=user_id)
-#         except User.DoesNotExist:
-#             selected_user = user
-
-#     hidden_ids = request.session.get('hidden_my_kyc' if kyc_type == 'my' else 'hidden_sub_kyc', [])
-
-#     if kyc_type == 'my':
-#         kyc_list = MyKYC.objects.filter(created_by=selected_user)
-#     else:
-#         kyc_list = SubKYC.objects.filter(
-#             user=selected_user
-#         ) | SubKYC.objects.filter(
-#             created_by=selected_user
-#         )
-#         kyc_list = kyc_list.distinct()
-
-#     kyc_list = kyc_list.exclude(id__in=hidden_ids)
-
-#     for idx, kyc in enumerate(kyc_list, 1):
-#         if y - card_height < margin:
-#             c.showPage()
-#             y = H - margin
-#             c.setFont("Helvetica-Bold", 18)
-#             c.drawCentredString(W / 2, y, "KYC Report")
-#             y -= 15 * mm
-
-#         c.setLineWidth(1)
-#         c.roundRect(x0, y - card_height, card_width, card_height, 5 * mm, stroke=1, fill=0)
-
-#         header_h = 10 * mm
-#         c.setFillColor(colors.lightgrey)
-#         c.roundRect(x0, y - header_h, card_width, header_h, 5 * mm, stroke=0, fill=1)
-#         c.setFillColor(colors.black)
-#         c.setFont("Helvetica-Bold", 12)
-#         c.drawString(x0 + 5 * mm, y - header_h + 2 * mm, f"KYC #{idx}")
-
-#         labels = [
-#             ("Name", kyc.name),
-#             ("Father's Name", kyc.fathername or "—"),
-#             ("Mobile", kyc.mobile_number),
-#             ("Aadhar", kyc.aadhar_number),
-#             ("Address", kyc.address),
-#             ("Profession", kyc.profession or "—"),
-#             ("Contact SH", kyc.contactSH or "—"),
-#             ("Name SH", kyc.nameSH or "—"),
-#             ("Investment", str(kyc.investmentamt) if kyc.investmentamt else "—"),
-#         ]
-
-#         col_x = [x0 + 5 * mm, x0 + card_width / 2 + 5 * mm]
-#         c.setFont("Helvetica", 10)
-#         line_h = 6 * mm
-#         start_y = y - header_h - 5 * mm
-
-#         for i, (label, val) in enumerate(labels):
-#             col = i % 2
-#             row = i // 2
-#             text_y = start_y - row * line_h
-#             c.drawString(col_x[col], text_y, f"{label}: {val}")
-
-#         y -= card_height + 5 * mm
-
-#     c.save()
-#     return response
-
-
-
-
-# from reportlab.lib.pagesizes import A4
-# from reportlab.pdfgen import canvas
-# from reportlab.lib import colors
-# from reportlab.lib.units import mm
-# from django.http import HttpResponse
-# from django.contrib.auth.decorators import login_required
-# from .models import MyKYC, SubKYC
-
-# @login_required
-# def download_kyc_pdf(request, kyc_type):
-#     response = HttpResponse(content_type='application/pdf')
-#     filename = "my_kyc_report.pdf" if kyc_type == 'my' else "sub_kyc_report.pdf"
-#     response['Content-Disposition'] = f'attachment; filename="{filename}"'
-
-#     c = canvas.Canvas(response, pagesize=A4)
-#     W, H = A4
-#     margin = 20 * mm
-#     card_width = W - 2 * margin
-#     card_height = 60 * mm
-#     x0 = margin
-#     y = H - margin
-
-#     c.setFont("Helvetica-Bold", 18)
-#     c.drawCentredString(W / 2, y, "KYC Report")
-#     y -= 15 * mm
-
-#     # Select model based on kyc_type
-#     user = request.user
-#     if kyc_type == 'my':
-#         if user.is_superuser or getattr(user, "is_main_user", False):
-#             kyc_list = MyKYC.objects.all()
-#         elif getattr(user, "is_sub_mainuser", False):
-#             kyc_list = MyKYC.objects.filter(user__parent=user)
-#         else:
-#             kyc_list = MyKYC.objects.filter(user=user)
-#     else:
-#         if user.is_superuser or getattr(user, "is_main_user", False):
-#             kyc_list = SubKYC.objects.all()
-#         elif getattr(user, "is_sub_mainuser", False):
-#             kyc_list = SubKYC.objects.filter(user__parent=user)
-#         else:
-#             kyc_list = SubKYC.objects.filter(created_by=user).exclude(user=user)
-
-#     for idx, kyc in enumerate(kyc_list, 1):
-#         if y - card_height < margin:
-#             c.showPage()
-#             y = H - margin
-#             c.setFont("Helvetica-Bold", 18)
-#             c.drawCentredString(W / 2, y, "KYC Report")
-#             y -= 15 * mm
-
-#         c.setLineWidth(1)
-#         c.roundRect(x0, y - card_height, card_width, card_height, 5 * mm, stroke=1, fill=0)
-
-#         header_h = 10 * mm
-#         c.setFillColor(colors.lightgrey)
-#         c.roundRect(x0, y - header_h, card_width, header_h, 5 * mm, stroke=0, fill=1)
-#         c.setFillColor(colors.black)
-#         c.setFont("Helvetica-Bold", 12)
-#         c.drawString(x0 + 5 * mm, y - header_h + 2 * mm, f"KYC #{idx}")
-
-#         labels = [
-#             ("Name", kyc.name),
-#             ("Father's Name", kyc.fathername or "—"),
-#             ("Mobile", kyc.mobile_number),
-#             ("Aadhar", kyc.aadhar_number),
-#             ("Address", kyc.address),
-#             ("Profession", kyc.profession or "—"),
-#             ("Contact SH", kyc.contactSH or "—"),
-#             ("Name SH", kyc.nameSH or "—"),
-#             ("Investment", str(kyc.investmentamt) if kyc.investmentamt else "—"),
-#         ]
-
-#         col_x = [x0 + 5 * mm, x0 + card_width / 2 + 5 * mm]
-#         c.setFont("Helvetica", 10)
-#         line_h = 6 * mm
-#         start_y = y - header_h - 5 * mm
-
-#         for i, (label, val) in enumerate(labels):
-#             col = i % 2
-#             row = i // 2
-#             text_y = start_y - row * line_h
-#             c.drawString(col_x[col], text_y, f"{label}: {val}")
-
-#         y -= card_height + 5 * mm
-
-#     c.save()
-#     return response
 
 
 

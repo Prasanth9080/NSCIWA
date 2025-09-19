@@ -133,31 +133,6 @@
   <input type="text" name="nameofdirector" placeholder="Name of Director" value="{{ kyc.nameofdirector }}" class="form-control" required>
 </div>
 
-    <!-- Show existing bond images -->
-<!-- <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-    <label>Existing Bond Images:</label><br>
-    {% for bond in kyc.bonds.all %}
-        <div class="d-inline-block me-3 text-center">
-            <img src="{{ bond.image.url }}" width="80" class="img-thumbnail mb-1">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="delete_bonds" value="{{ bond.id }}" id="del{{ bond.id }}">
-                <label class="form-check-label small" for="del{{ bond.id }}">Remove</label>
-            </div>
-        </div>
-    {% empty %}
-        <p class="text-muted">No bond images uploaded.</p>
-    {% endfor %}
-</div> -->
-
-
-<!-- Upload new bond images -->
-<!-- <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-    <label for="bondImages">Add New Bond Images</label>
-    <div id="bondInputs">
-        <input type="file" name="bonds" accept="image/*" class="form-control mb-2">
-    </div>
-    <button type="button" class="btn btn-sm btn-success" onclick="addBondInput()">+ Add Bond Image</button>
-</div> -->
 
 <div class="col-12 mb-3">
   <label class="form-label">Bond Details</label>

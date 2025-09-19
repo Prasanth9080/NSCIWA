@@ -39,12 +39,6 @@
     <textarea name="depositorsaddress" placeholder="Depositor's Address" class="form-control" required></textarea>
   </div>
 
-  <!-- Project Name -->
-  <!-- <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-    <label>Project Name:</label>
-    <input type="text" name="projectname" placeholder="Project Name" class="form-control" required>
-  </div> -->
-
   <!-- Depositor Mobile Number -->
   <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
     <label>Member Mobile Number:<strong style="color: red;">*</strong></label>
@@ -127,10 +121,6 @@
             <h6>Bond Holder Name:<strong style="color: red;">*</strong></h6>
             <input type="text" name="bondholdername_0" placeholder="Bond Holder Name" class="form-control mb-2" required>
           </div>
-          <!-- <div class="col-lg-6 col-md-6 col-sm-12">
-            <h6>Bond Image:</h6>
-            <input type="file" name="bonds" accept="image/*" class="form-control mb-2" required>
-          </div> -->
           <div class="col-lg-6 col-md-6 col-sm-12">
             <h6>Company Name:<strong style="color: red;">*</strong></h6>
             <input type="text" name="companyname_0" placeholder="Company Name" class="form-control mb-2" required>
@@ -143,14 +133,6 @@
             <h6>Deposit Amount:<strong style="color: red;">*</strong></h6>
             <input type="number" step="0.01" placeholder="Amount" name="amount_0" class="form-control mb-2" required>
           </div>
-          <!-- <div class="col-lg-6 col-md-6 col-sm-12">
-            <h6>Interest Refund Amount:<strong style="color: red;">*</strong></h6>
-            <input type="number" step="0.01" placeholder="Interest Refund Amount" name="refundamount_0" class="form-control mb-2" required>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <h6>Balance / Default Amount:<strong style="color: red;">*</strong></h6>
-            <input type="number" step="0.01" placeholder="Balance / Default Amount" name="balanceamount_0" class="form-control mb-2" required>
-          </div> -->
           <div class="col-lg-6 col-md-6 col-sm-12">
             <h6>Investment Date:<strong style="color: red;">*</strong></h6>
             <input type="text" name="investment_date_0" placeholder="dd-mm-yyyy or dd/mm/yyyy or dd.mm.yyyy" class="form-control mb-2" required>
@@ -194,47 +176,6 @@
 
 </div>
 
-
-<!-- Add bond images -->
-
-<!-- <script>
-function addBondInput() {
-  const bondInputs = document.getElementById('bondInputs');
-
-  const group = document.createElement('div');
-  group.className = 'bond-input-group border p-3 mb-3';
-  group.innerHTML = `
-     <div class="row">
-      <div class="col-md-6 mb-3">
-        <label><strong>Bond Image:</strong></label>
-        <input type="file" name="bonds" accept="image/*" class="form-control" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label><strong>Company Name:</strong></label>
-        <input type="text" name="companyname" placeholder="Company Name" class="form-control" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label><strong>Project Name:</strong></label>
-        <input type="text" name="projectname" placeholder="Project Name" class="form-control" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label><strong>Amount:</strong></label>
-        <input type="number" step="0.01" name="amount" placeholder="Amount" class="form-control" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label><strong>Investment Date:</strong></label>
-        <input type="date" name="investment_date" class="form-control investment-date" placeholder="Investment Date" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label><strong>Customer ID:</strong></label>
-        <input type="text" name="customer_id" placeholder="Customer ID" class="form-control" required>
-      </div>
-    </div>
-  `;
-
-  bondInputs.appendChild(group);
-}
-</script> -->
 
 <!-- Dropdown script for responsive  -->
 <script>
