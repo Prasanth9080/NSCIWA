@@ -301,8 +301,8 @@ def form_page(request):
             "ifscno": request.POST.get("ifscno"),
             "agentname": request.POST.get("agentname"),
             "agentmobnum": request.POST.get("agentmobnum"),
-            "agentmailid": request.POST.get("agentmailid"),
-            "agentaddress": request.POST.get("agentaddress"),
+            # "agentmailid": request.POST.get("agentmailid"),
+            # "agentaddress": request.POST.get("agentaddress"),
             "nameofdirector": request.POST.get("nameofdirector"),
         }
 
@@ -435,8 +435,8 @@ def edit_kyc(request, kyc_id, kyc_type):
         kyc.ifscno = request.POST.get("ifscno")
         kyc.agentname = request.POST.get("agentname")
         kyc.agentmobnum = request.POST.get("agentmobnum")
-        kyc.agentmailid = request.POST.get("agentmailid")
-        kyc.agentaddress = request.POST.get("agentaddress")
+        # kyc.agentmailid = request.POST.get("agentmailid")
+        # kyc.agentaddress = request.POST.get("agentaddress")
         kyc.nameofdirector = request.POST.get("nameofdirector")
 
         # ------- Update existing bonds -------
@@ -687,8 +687,8 @@ def download_kyc_excel(request, kyc_type):
             safe_attr(kyc, "ifscno", default=""),
             safe_attr(kyc, "agentname", default=""),
             safe_attr(kyc, "agentmobnum", default=""),
-            safe_attr(kyc, "agentmailid", default=""),
-            safe_attr(kyc, "agentaddress", default=""),
+            # safe_attr(kyc, "agentmailid", default=""),
+            # safe_attr(kyc, "agentaddress", default=""),
             safe_attr(kyc, "nameofdirector", default=""),
         ]
         sheet.append(base_row + [''] * 7)  # Empty bond columns for KYC row
@@ -881,8 +881,8 @@ def download_kyc_pdf(request, kyc_type):
             ["IFSC Code", safe_attr(kyc, "ifscno")],
             ["Agent Name", safe_attr(kyc, "agentname")],
             ["Agent Mobile Number", safe_attr(kyc, "agentmobnum")],
-            ["Agent Mail ID", safe_attr(kyc, "agentmailid")],
-            ["Agent Address", safe_attr(kyc, "agentaddress")],
+            # ["Agent Mail ID", safe_attr(kyc, "agentmailid")],
+            # ["Agent Address", safe_attr(kyc, "agentaddress")],
             ["Director Name", safe_attr(kyc, "nameofdirector")],
             # ["Passport Photo", Image(kyc.passportphoto.path, width=20*mm, height=25*mm) if kyc.passportphoto and os.path.exists(kyc.passportphoto.path) else "—"],
         ]
@@ -1232,8 +1232,8 @@ def add_my_kyc(request):
             ifscno=request.POST.get("ifscno"),
             agentname=request.POST.get("agentname"),
             agentmobnum=request.POST.get("agentmobnum"),
-            agentmailid=request.POST.get("agentmailid"),
-            agentaddress=request.POST.get("agentaddress"),
+            # agentmailid=request.POST.get("agentmailid"),
+            # agentaddress=request.POST.get("agentaddress"),
             nameofdirector=request.POST.get("nameofdirector"),
         )
 

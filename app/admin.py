@@ -17,7 +17,7 @@ from .models import MyKYC
 class MyKYCAdmin(admin.ModelAdmin):
     list_display = (
         'associationname', 'membershipno', 'depositorsname', 'depositorsmailid', 'depositorsaddress',
-        'bondholdername', 'depositormobile_number', 'agentname', 'agentmobnum', 'agentmailid', 'agentaddress', 'nameofdirector', 'aadhar_number',
+        'bondholdername', 'depositormobile_number', 'agentname', 'agentmobnum', 'nameofdirector', 'aadhar_number',
         'pan_number', 'ration_number', 'bankname', 'bankaccno', 'ifscno'
     )
     search_fields = (
